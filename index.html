@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Луна — Liquid Glass AI</title>
+    <!-- Оригинальный шрифт из вашего примера -->
+    <link href="https://v1.fontapi.ir/css/SFProDisplay" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           1. ЧИСТЫЙ БАЗОВЫЙ СТИЛЬ (PREMIUM DARK)
+           ========================================= */
+        :root {
+            /* Цвета из вашего CSS, но чуть чище */
+            --bg-color: #000000;
+            --text-main: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            
+            /* Акценты (Liquid) */
+            --accent-primary: #5e35b1; /* Deep Purple */
+            --accent-secondary: #3949ab; /* Indigo */
+            
+            /* Стекло */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-blur: 40px;
+
+            --font-stack: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-stack);
+            overflow-x: hidden;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased; /* Четкость шрифтов на Mac/iOS */
+        }
+
+        /* Фон (Liquid Blobs) - Сделан мягче */
+        .liquid-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden;
+            background: radial-gradient(circle at top center, #100c1c 0%, #000000 100%);
+        }
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+        .b1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--accent-primary); }
+        .b2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: var(--accent-secondary); animation-delay: -5s; }
+        
+        @keyframes float { 0% { transform: translate(0,0); } 100% { transform: translate(20px, 40px); } }
+
+        /* =========================================
+           2. UI КОМПОНЕНТЫ (GLASS)
+           ========================================= */
+        
+        /* Карточка (Glassmorphism) */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s;
+        }
+        
+        .glass-panel:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.25);
+        }
+
+        /* Кнопка (Pill) */
+        .btn-pill {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 12px 28px; border-radius: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff; text-decoration: none; font-weight: 500; font-size: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.2s; cursor: pointer;
+        }
+        .btn-pill:hover {
+            background: #fff; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.4);
+        }
+
+        /* =========================================
+           3. ИКОНКИ-АВАТАРЫ (ИСПРАВЛЕНИЕ ГИФОК)
+           ========================================= */
+        
+        /* Контейнер для гифки, имитирующий иконку iOS (Squircle) */
+        .app-icon {
+            width: 72px; height: 72px;
+            background: #ffffff; /* Белый фон сливается с фоном гифки */
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            overflow: hidden; /* Обрезаем лишнее */
+            position: relative;
+        }
+        
+        /* Сама гифка внутри */
+        .app-icon img {
+            width: 90%; /* Чуть меньше контейнера, чтобы был "воздух" */
+            height: 90%;
+            object-fit: contain;
+        }
+
+        /* =========================================
+           4. HEADER
+           ========================================= */
+        header {
+            position: fixed; top: 0; width: 100%; padding: 20px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .logo { font-size: 22px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 15px; transition: 0.2s; }
+        .nav-links a:hover { color: #fff; }
+
+        /* =========================================
+           5. HERO SECTION
+           ========================================= */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; justify-content: space-between;
+            padding: 150px 10% 80px; position: relative;
+        }
+        
+        .hero-content { max-width: 600px; z-index: 2; }
+        
+        h1 {
+            font-size: clamp(40px, 5vw, 72px);
+            line-height: 1.05;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            background: linear-gradient(180deg, #ffffff 0%, #a5a5a5 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        p.subtitle {
+            font-size: 20px; color: var(--text-secondary); margin-bottom: 40px; max-width: 480px; font-weight: 400;
+        }
+
+        /* STACK UI (Правая часть) */
+        .stack-wrapper {
+            position: relative; width: 400px; height: 400px;
+            display: flex; justify-content: center; align-items: center;
+            perspective: 1000px;
+        }
+        
+        .card-message {
+            position: absolute; width: 100%; padding: 25px;
+            background: rgba(20, 20, 20, 0.85); /* Чуть темнее для контраста */
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 24px;
+            backdrop-filter: blur(30px);
+            display: flex; flex-direction: column; gap: 15px;
+            transition: 0.5s ease;
+        }
+        
+        /* Слои карточек */
+        .layer-1 { transform: translateY(-60px) scale(0.9) translateZ(-50px); opacity: 0.5; z-index: 1; }
+        .layer-2 { transform: translateY(-30px) scale(0.95) translateZ(-25px); opacity: 0.8; z-index: 2; }
+        .layer-3 { transform: translateY(0) scale(1) translateZ(0); z-index: 3; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        
+        .stack-wrapper:hover .layer-3 { transform: translateY(10px) scale(1.02); }
+
+        /* Элементы внутри карточки стека */
+        .msg-header { display: flex; align-items: center; gap: 15px; }
+        .avatar-small { 
+            width: 44px; height: 44px; background: #fff; border-radius: 12px; 
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+        .avatar-small img { width: 80%; height: 80%; object-fit: contain; }
+        
+        .msg-text { font-size: 15px; color: rgba(255,255,255,0.9); }
+        .msg-sub { font-size: 13px; color: rgba(255,255,255,0.5); }
+
+        /* =========================================
+           6. FEATURES (GRID)
+           ========================================= */
+        .features { padding: 100px 10%; }
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;
+        }
+        
+        .feature-card {
+            padding: 30px; display: flex; flex-direction: column;
+            min-height: 320px;
+        }
+        
+        .feature-card h3 { font-size: 22px; margin-bottom: 10px; font-weight: 600; }
+        .feature-card p { font-size: 15px; color: var(--text-secondary); line-height: 1.5; flex-grow: 1; }
+        
+        .tag-container { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+        .tag {
+            font-size: 12px; padding: 6px 12px; border-radius: 8px;
+            background: rgba(255,255,255,0.05); color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* =========================================
+           7. MOBILE
+           ========================================= */
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 120px; }
+            .hero-content { margin-bottom: 60px; }
+            p.subtitle { margin: 0 auto 40px; }
+            .stack-wrapper { width: 100%; height: 350px; }
+            .nav-links { display: none; } /* Упрощение для демо */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="liquid-bg">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+    </div>
+
+    <header>
+        <div class="logo">◆ LUNA</div>
+        <nav class="nav-links">
+            <a href="#features">Функции</a>
+            <a href="https://t.me/luna_proekt" target="_blank">Telegram</a>
+            <a href="https://t.me/Ktoto_a_eto_Ia" target="_blank" class="btn-pill" style="padding: 8px 20px; font-size: 14px;">Купить</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Твой Голос — <br>Твоя Власть</h1>
+            <p class="subtitle">
+                LUNA v1.3 — это локальный ИИ-ассистент. Управляй системой, ищи в сети и смотри фильмы без лишних кликов.
+            </p>
+            <a href="https://t.me/Ktoto_a_eto_Ia" target="_blank" class="btn-pill">Купить доступ →</a>
+        </div>
+
+        <!-- ИНТЕРАКТИВНЫЙ СТЕК -->
+        <div class="stack-wrapper">
+            
+            <!-- Слой 1: История -->
+            <div class="card-message layer-1">
+                <div class="msg-header">
+                    <div class="avatar-small" style="background: #333; color: #fff;">🕒</div>
+                    <div>
+                        <div class="msg-text">Громкость 50%</div>
+                        <div class="msg-sub">Выполнено</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Слой 2: Процесс -->
+            <div class="card-message layer-2">
+                <div class="msg-header">
+                    <div class="avatar-small" style="background: var(--accent-secondary); color: #fff;">⚙️</div>
+                    <div>
+                        <div class="msg-text">Анализ контекста...</div>
+                        <div class="msg-sub">Обработка нейросети</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Слой 3: Активный диалог (ГИФКА HELLO) -->
+            <div class="card-message layer-3">
+                <div class="msg-header">
+                    <!-- Аватар с Уточкой -->
+                    <div class="avatar-small">
+                        <img src="hello_inthetop.gif" alt="Hello">
+                    </div>
+                    <div>
+                        <div class="msg-text">Луна слушает</div>
+                        <div class="msg-sub">Привет! Чем помочь?</div>
+                    </div>
+                </div>
+                <p style="color: rgba(255,255,255,0.8); line-height: 1.4;">
+                    "Включи музыку и открой браузер"
+                </p>
+                <div style="display: flex; gap: 10px; margin-top: 5px;">
+                    <button class="btn-pill" style="flex:1; padding: 10px; font-size: 13px;">Да</button>
+                    <button class="btn-pill" style="flex:1; padding: 10px; font-size: 13px; background: transparent;">Нет</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="grid">
+            
+            <!-- Карточка 1: Нейросеть (SMART.GIF) -->
+            <div class="glass-panel feature-card">
+                <div class="app-icon">
+                    <img src="smart.gif" alt="Smart">
+                </div>
+                <h3>Интеллект</h3>
+                <p>Понимает сложные контекстные запросы. Не нужно заучивать команды — общайся на естественном языке.</p>
+                <div class="tag-container">
+                    <span class="tag">NLP</span>
+                    <span class="tag">Context</span>
+                </div>
+            </div>
+
+            <!-- Карточка 2: Приватность (SECURE.GIF) -->
+            <div class="glass-panel feature-card">
+                <div class="app-icon">
+                    <img src="secure.gif" alt="Secure">
+                </div>
+                <h3>Приватность</h3>
+                <p>Все данные обрабатываются локально на твоем ПК. Никаких облаков и утечек данных.</p>
+                <div class="tag-container">
+                    <span class="tag">Offline</span>
+                    <span class="tag">AES-256</span>
+                </div>
+            </div>
+
+            <!-- Карточка 3: Контроль (CONTROL.GIF - НОВАЯ) -->
+            <div class="glass-panel feature-card">
+                <div class="app-icon">
+                    <img src="control.gif" alt="Control">
+                </div>
+                <h3>Полный Контроль</h3>
+                <p>Управляй громкостью, процессами и питанием ПК. "Выключи компьютер через 10 минут" — легко.</p>
+                <div class="tag-container">
+                    <span class="tag">System</span>
+                    <span class="tag">Power</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</body>
+</html>
